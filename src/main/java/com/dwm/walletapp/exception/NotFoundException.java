@@ -1,0 +1,7 @@
+package com.dwm.walletapp.exception;
+
+public class NotFoundException extends RuntimeException{
+    public NotFoundException(String message) {
+        super(message + " is not found!");
+    }
+}
