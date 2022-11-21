@@ -14,14 +14,31 @@ import java.util.List;
 public interface IWalletService {
     /**
      * Calls a customers wallet balance from database
+     * @param customerId A unique numeric value which belongs to a specific customer
      */
     BigDecimal getWalletBalance(int customerId);
 
+    /**
+     * Tries to complete a withdrawal transaction request with given withdrawal transaction dto body
+     * @param withdrawalTransactionDTO  A given body of withdrawal transaction dto with all parameters
+     */
     WalletBalance withdrawalTransaction(WithdrawalTransactionDTO withdrawalTransactionDTO);
 
+    /**
+     * Tries to complete a deposit transaction request with given deposit transaction dto body
+     * @param depositTransactionDTO  A given body of deposit transaction dto with all parameters
+     */
     WalletBalance depositTransaction(DepositTransactionDTO depositTransactionDTO);
 
+    /**
+     * Calls all transaction entities which belongs to a specific customer with given customer id from database
+     * @param customerId A unique numeric value which belongs to a specific customer
+     */
     List<Transaction> getTransactionHistory(int customerId);
 
+    /**
+     * Saves a new customers wallet balance information to database
+     * @param walletBalance A given wallet balance entity with all parameters
+     */
     WalletBalance save(WalletBalance walletBalance);
 }

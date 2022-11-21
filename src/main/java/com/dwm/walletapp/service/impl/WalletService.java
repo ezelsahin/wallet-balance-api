@@ -32,8 +32,9 @@ public class WalletService implements IWalletService {
     public WalletRepository walletRepository;
 
     /**
-     * Gets a specific wallet balance from database
-     * @return Returns
+     * Gets a customers wallet balance information from database with given customer id
+     * @param customerId A unique numeric value which belongs to a specific customer
+     * @return Returns customers wallet balance information
      */
     @Override
     public BigDecimal getWalletBalance(int customerId)
@@ -45,6 +46,11 @@ public class WalletService implements IWalletService {
         }
     }
 
+    /**
+     * Withdraws money from a customers wallet according to given withdrawal request dto
+     * @param withdrawalTransactionDTO  A given body of withdrawal transaction dto with all parameters
+     * @return Returns new wallet balance of the customer after withdrawal transaction
+     */
     @Override
     public WalletBalance withdrawalTransaction(WithdrawalTransactionDTO withdrawalTransactionDTO) {
         int transactionId = withdrawalTransactionDTO.getTransactionId();
@@ -72,6 +78,11 @@ public class WalletService implements IWalletService {
         return wallet;
     }
 
+    /**
+     * Deposits money from a customers wallet according to given deposit request dto
+     * @param depositTransactionDTO A given body of deposit transaction dto with all parameters
+     * @return Returns new wallet balance of the customer after deposit transaction
+     */
     @Override
     public WalletBalance depositTransaction(DepositTransactionDTO depositTransactionDTO) {
         int transactionId = depositTransactionDTO.getTransactionId();
@@ -91,6 +102,11 @@ public class WalletService implements IWalletService {
         return wallet;
     }
 
+    /**
+     * Gets all transactions of a customer according to given customer id
+     * @param customerId  A unique numeric value which belongs to a specific customer
+     * @return Returns customers every transactions as a list
+     */
     @Override
     public List<Transaction> getTransactionHistory(int customerId) {
         try{
@@ -100,11 +116,21 @@ public class WalletService implements IWalletService {
         }
     }
 
+    /**
+     * Adds given wallet balance information to database
+     * @param walletBalance A given wallet balance entity body with all parameters
+     * @return Returns added customers wallet balance information
+     */
     @Override
     public WalletBalance save(WalletBalance walletBalance) {
         return walletRepository.save(walletBalance);
     }
 
+    /**
+     * Checks if given transaction id is unique or not
+     * @param transactionId A specific numeric value which belongs to a transaction request
+     * @return returns true if given transaction id is exist in database
+     */
     public boolean isUnique(int transactionId){
         if (transactionReporsitory.findByTransactionId(transactionId) == "null" )
             return false;
@@ -112,6 +138,12 @@ public class WalletService implements IWalletService {
             return true;
     }
 
+    /**
+     * Checks if requested withdrawal amount is bigger than wallet balance or not
+     * @param customerId  A unique numeric value which belongs to a specific customer
+     * @param withdrawalAmount Requested withdrawal amount
+     * @return returns true if given withdrawal amount is not bigger than wallet balance
+     */
     public boolean isSufficient(int customerId, BigDecimal withdrawalAmount) {
         if (withdrawalAmount.compareTo(walletRepository.findByCustomerId(customerId).getWalletBalance()) == 1)
             return false;
@@ -119,10 +151,22 @@ public class WalletService implements IWalletService {
             return true;
     }
 
+    /**
+     * Adds given deposit amount to customers wallet balance
+     * @param customerId  A unique numeric value which belongs to a specific customer
+     * @param depositAmount Requested deposit amount
+     * @return returns new wallet balance after deposit amount added
+     */
     public BigDecimal addBalance(int customerId, BigDecimal depositAmount){
         return walletRepository.findByCustomerId(customerId).getWalletBalance().add(depositAmount);
     }
 
+    /**
+     * Subtracts given withdrawal amount from customers wallet balance
+     * @param customerId  A unique numeric value which belongs to a specific customer
+     * @param withdrawalAmount Requested withdrawal amount
+     * @return returns new wallet balance after withdrawal amount subtracted
+     */
     public BigDecimal subtractBalance(int customerId, BigDecimal withdrawalAmount){
         return walletRepository.findByCustomerId(customerId).getWalletBalance().subtract(withdrawalAmount);
     }
