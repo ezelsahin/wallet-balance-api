@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,21 +25,22 @@ public class WalletController {
      * A basic test method
      * @return Returns test message
      */
-    @GetMapping
+    @GetMapping("/test")
     public String test() {
         return "Testing is successful!";
     }
 
     /**
-     * @return Returns hourly average temperatures on "/getHourly" url
+     * @param customerId A unique numeric value which belongs to a specific customer
+     * @return Returns customers current wallet balance with given customerId  on "/getBalance" url
      */
-    @GetMapping("/getBalance")
-    public BigDecimal getBalance(int customerId) {
+    @GetMapping("/getBalance/{customerId}")
+    public BigDecimal getBalance(@PathVariable @Min(1) int customerId) {
         return iWalletService.getWalletBalance(customerId);
     }
 
     /**
-     * @return Returns daily average temperatures on "/getDaily" url
+     * @return
      */
     @PutMapping ("/withdrawalRequest")
     public WalletBalance newWithdrawalRequest(@RequestBody @Valid WithdrawalTransactionDTO withdrawalTransactionDTO) {
@@ -46,18 +48,22 @@ public class WalletController {
     }
 
     /**
-     * @return Returns daily average temperatures on "/getDaily" url
+     * @return
      */
     @PutMapping("/depositRequest")
     public WalletBalance newDepositRequest(@RequestBody @Valid DepositTransactionDTO depositTransactionDTO) {
         return iWalletService.depositTransaction(depositTransactionDTO);
     }
 
-    @GetMapping("/getTransactionHistory")
-    public List<Transaction> getTransactions(int customerId){
+    @GetMapping("/getTransactionHistory/{customerId}")
+    public List<Transaction> getTransactions(@PathVariable @Min(1) int customerId){
         return iWalletService.getTransactionHistory(customerId);
     }
 
+    /**
+     * Adds new customer ID and wallet balance values to database on "/save" url
+     * @param walletBalance A given body WalletBalance entity with all parameters
+     */
     @PutMapping("/save")
     public WalletBalance saveWallet(@RequestBody @Valid WalletBalance walletBalance){
         return iWalletService.save(walletBalance);

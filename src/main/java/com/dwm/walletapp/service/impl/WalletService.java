@@ -2,9 +2,12 @@ package com.dwm.walletapp.service.impl;
 
 import com.dwm.walletapp.dto.DepositTransactionDTO;
 import com.dwm.walletapp.dto.WithdrawalTransactionDTO;
+import com.dwm.walletapp.dto.mapper.DepositMapper;
+import com.dwm.walletapp.dto.mapper.WithdrawalMapper;
 import com.dwm.walletapp.entity.Transaction;
 import com.dwm.walletapp.entity.WalletBalance;
 import com.dwm.walletapp.exception.InsufficientBalanceException;
+import com.dwm.walletapp.exception.NotFoundException;
 import com.dwm.walletapp.exception.NotUniqueException;
 import com.dwm.walletapp.repository.TransactionReporsitory;
 import com.dwm.walletapp.repository.WalletRepository;
@@ -29,15 +32,18 @@ public class WalletService implements IWalletService {
     public WalletRepository walletRepository;
 
     /**
-     * Gets all hourly average temperature entities from database
-     * @return Returns all hourly average temperature entities in database as List<>
+     * Gets a specific wallet balance from database
+     * @return Returns
      */
     @Override
     public BigDecimal getWalletBalance(int customerId)
     {
-        return walletRepository.findByCustomerId(customerId).getWalletBalance();
+        try{
+            return walletRepository.findByCustomerId(customerId).getWalletBalance();
+        } catch (NotFoundException ex) {
+            throw new NotFoundException("Customer Id");
+        }
     }
-
 
     @Override
     public WalletBalance withdrawalTransaction(WithdrawalTransactionDTO withdrawalTransactionDTO) {
@@ -57,9 +63,11 @@ public class WalletService implements IWalletService {
             throw new InsufficientBalanceException("Wallet balance");
         }
 
-        WalletBalance wallet = walletRepository.findByCustomerId(withdrawalTransactionDTO.getCustomerId());
+        WalletBalance wallet = walletRepository.findByCustomerId(customerId);
 
-        wallet.setWalletBalance(subtractBalance(withdrawalTransactionDTO.getCustomerId(), withdrawalTransactionDTO.getWithdrawalAmount()));
+        wallet.setWalletBalance(subtractBalance(customerId, withdrawalTransactionDTO.getWithdrawalAmount()));
+
+        transactionReporsitory.save(WithdrawalMapper.toEntity(withdrawalTransactionDTO));
 
         return wallet;
     }
@@ -78,12 +86,18 @@ public class WalletService implements IWalletService {
 
         wallet.setWalletBalance(addBalance(depositTransactionDTO.getCustomerId(), depositTransactionDTO.getDepositAmount()));
 
+        transactionReporsitory.save(DepositMapper.toEntity(depositTransactionDTO));
+
         return wallet;
     }
 
     @Override
     public List<Transaction> getTransactionHistory(int customerId) {
-        return transactionReporsitory.findByCustomerId(customerId);
+        try{
+            return transactionReporsitory.findByCustomerId(customerId);
+        } catch (NotFoundException ex) {
+            throw new NotFoundException("Customer transaction");
+        }
     }
 
     @Override
@@ -92,14 +106,14 @@ public class WalletService implements IWalletService {
     }
 
     public boolean isUnique(int transactionId){
-        if (transactionReporsitory.findByTransactionId(transactionId))
+        if (transactionReporsitory.findByTransactionId(transactionId) == "null" )
             return false;
         else
             return true;
     }
 
     public boolean isSufficient(int customerId, BigDecimal withdrawalAmount) {
-        if (withdrawalAmount.compareTo(walletRepository.findByCustomerId(customerId).getWalletBalance()) == 1 )
+        if (withdrawalAmount.compareTo(walletRepository.findByCustomerId(customerId).getWalletBalance()) == 1)
             return false;
         else
             return true;

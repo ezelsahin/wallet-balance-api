@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IWalletService {
     /**
-     * Calls all hourly average temperature entities from database
+     * Calls a customers wallet balance from database
      */
     BigDecimal getWalletBalance(int customerId);
 
