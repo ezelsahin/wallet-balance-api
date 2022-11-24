@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,12 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WithdrawalTransactionDTO {
-    private int transactionId;
+    @NotNull
+    private Integer transactionId;
 
-    private int customerId;
+    @NotNull
+    private Integer customerId;
 
-    private char transactionType;
+    private String transactionType;
 
+    @Min(0)
     private BigDecimal withdrawalAmount;
 
     private LocalDateTime transactionTime;

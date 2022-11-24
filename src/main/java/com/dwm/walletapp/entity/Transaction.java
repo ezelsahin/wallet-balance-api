@@ -25,7 +25,7 @@ public class Transaction {
     private int customerId;
 
     @Column
-    private char transactionType;
+    private String transactionType;
 
     @Column
     private BigDecimal withdrawalAmount;

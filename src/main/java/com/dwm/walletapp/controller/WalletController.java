@@ -10,8 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -35,7 +34,7 @@ public class WalletController {
      * @return Returns a customers current wallet balance with given customerId  on "/getBalance" url
      */
     @GetMapping("/getBalance/{customerId}")
-    public BigDecimal getBalance(@PathVariable @Min(1) int customerId) {
+    public WalletBalance getBalance(@PathVariable @NotNull Integer customerId) {
         return iWalletService.getWalletBalance(customerId);
     }
 
@@ -44,7 +43,7 @@ public class WalletController {
      * @param withdrawalTransactionDTO  A given body of withdrawal transaction dto with all parameters
      * @return Returns customers id and new balance after withdrawal
      */
-    @PutMapping ("/withdrawalRequest")
+    @PostMapping ("/withdrawalRequest")
     public WalletBalance newWithdrawalRequest(@RequestBody @Valid WithdrawalTransactionDTO withdrawalTransactionDTO) {
         return iWalletService.withdrawalTransaction(withdrawalTransactionDTO);
     }
@@ -54,7 +53,7 @@ public class WalletController {
      * @param depositTransactionDTO  A given body of deposit transaction dto with all parameters
      * @return Returns customers id and new balance after withdrawal
      */
-    @PutMapping("/depositRequest")
+    @PostMapping("/depositRequest")
     public WalletBalance newDepositRequest(@RequestBody @Valid DepositTransactionDTO depositTransactionDTO) {
         return iWalletService.depositTransaction(depositTransactionDTO);
     }
@@ -65,7 +64,7 @@ public class WalletController {
      * @return Returns a customers all transactions as a list according to given customer id
      */
     @GetMapping("/getTransactionHistory/{customerId}")
-    public List<Transaction> getTransactions(@PathVariable @Min(1) int customerId){
+    public List<Transaction> getTransactions(@PathVariable @NotNull Integer customerId){
         return iWalletService.getTransactionHistory(customerId);
     }
 
@@ -74,7 +73,7 @@ public class WalletController {
      * @param walletBalance A given wallet balance entity body with all parameters
      * @return Returns saved customers wallet balance and customer id information
      */
-    @PutMapping("/save")
+    @PostMapping("/save")
     public WalletBalance saveWallet(@RequestBody @Valid WalletBalance walletBalance){
         return iWalletService.save(walletBalance);
     }

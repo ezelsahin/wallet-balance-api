@@ -5,7 +5,6 @@ import com.dwm.walletapp.dto.WithdrawalTransactionDTO;
 import com.dwm.walletapp.entity.Transaction;
 import com.dwm.walletapp.entity.WalletBalance;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ public interface IWalletService {
      * Calls a customers wallet balance from database
      * @param customerId A unique numeric value which belongs to a specific customer
      */
-    BigDecimal getWalletBalance(int customerId);
+    WalletBalance getWalletBalance(int customerId);
 
     /**
      * Tries to complete a withdrawal transaction request with given withdrawal transaction dto body

@@ -2,6 +2,7 @@ package com.dwm.walletapp.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,6 +16,27 @@ public class GenericExceptionHandler {
         Map<String, String> response = new HashMap<>();
         response.put("Message", exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(NotUniqueException.class)
+    public ResponseEntity<Map> handleNotUniqueException(NotUniqueException exception) {
+        Map<String, String> response = new HashMap<>();
+        response.put("Message", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<Map> handleInsufficientBalanceException(InsufficientBalanceException exception) {
+        Map<String, String> response = new HashMap<>();
+        response.put("Message", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        Map<String, String> response = new HashMap<>();
+        response.put("Message", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(Exception.class)

@@ -38,16 +38,16 @@ public class WalletServiceTest {
 
         when(walletRepository.findByCustomerId(123)).thenReturn(sampleWallet);
 
-        BigDecimal actualBalance = walletService.getWalletBalance(123);
+        WalletBalance actualBalance = walletService.getWalletBalance(123);
 
-        assertEquals(actualBalance, sampleWallet.getWalletBalance());
+        assertEquals(actualBalance.getWalletBalance(), sampleWallet.getWalletBalance());
 
     }
 
     @Test
     void withdrawalTransaction(){
         WalletBalance sampleWallet = new WalletBalance(1, 12, BigDecimal.valueOf(485.25));
-        WithdrawalTransactionDTO sampleWithdrawalDTO = new WithdrawalTransactionDTO(123, 12, 'W', BigDecimal.valueOf(128.0), LocalDateTime.of(2022, 5, 28, 12, 28));
+        WithdrawalTransactionDTO sampleWithdrawalDTO = new WithdrawalTransactionDTO(123, 12, "W", BigDecimal.valueOf(128.0), LocalDateTime.of(2022, 5, 28, 12, 28));
 
         when(walletRepository.findByCustomerId(12)).thenReturn(sampleWallet);
 
@@ -60,7 +60,7 @@ public class WalletServiceTest {
     @Test
     void depositTransaction(){
         WalletBalance sampleWallet = new WalletBalance(1, 15, BigDecimal.valueOf(745.08));
-        DepositTransactionDTO sampleDepositDTO = new DepositTransactionDTO(127, 15, 'D', BigDecimal.valueOf(586.4), LocalDateTime.of(2022, 6, 24, 15, 58));
+        DepositTransactionDTO sampleDepositDTO = new DepositTransactionDTO(127, 15, "D", BigDecimal.valueOf(586.4), LocalDateTime.of(2022, 6, 24, 15, 58));
 
         when(walletRepository.findByCustomerId(15)).thenReturn(sampleWallet);
 
@@ -73,9 +73,9 @@ public class WalletServiceTest {
     @Test
     void getTransactionHistory(){
         List<Transaction> transactionList = new ArrayList<>();
-        Transaction sample1 = new Transaction(1, 210, 107, 'W', BigDecimal.valueOf(425.5), null, LocalDateTime.of(2022,3,15,8,42));
-        Transaction sample2 = new Transaction(2, 234, 107, 'D', null, BigDecimal.valueOf(1500.0), LocalDateTime.of(2022,4,1,16,3));
-        Transaction sample3 = new Transaction(3, 276, 107, 'D', null, BigDecimal.valueOf(167.5), LocalDateTime.of(2022,8,22,18,37));
+        Transaction sample1 = new Transaction(1, 210, 107, "W", BigDecimal.valueOf(425.5), null, LocalDateTime.of(2022,3,15,8,42));
+        Transaction sample2 = new Transaction(2, 234, 107, "D", null, BigDecimal.valueOf(1500.0), LocalDateTime.of(2022,4,1,16,3));
+        Transaction sample3 = new Transaction(3, 276, 107, "D", null, BigDecimal.valueOf(167.5), LocalDateTime.of(2022,8,22,18,37));
         transactionList.add(sample1);
         transactionList.add(sample2);
         transactionList.add(sample3);
